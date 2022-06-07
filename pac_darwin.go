@@ -108,6 +108,7 @@ char* _getPacUrl() {
 import "C"
 import (
 	"fmt"
+	"strings"
 	"unsafe"
 )
 
@@ -123,7 +124,7 @@ func getProxyForURL(pacFileURL, url string) string {
 	if pacFileURL == "" {
 		pacFileURL = getPacUrl()
 	}
-	if pacFileURL == "" {
+	if strings.TrimSpace(pacFileURL) == "" {
 		return ""
 	}
 
