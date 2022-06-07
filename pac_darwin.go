@@ -25,16 +25,24 @@ int intCFNumber(CFNumberRef num) {
 }
 
 char* _getProxyUrlFromPac(char* pac, char* reqCs) {
+	printf("CGO:_getProxyUrlFromPac:pac:%s\n", pac);
+	printf("CGO:_getProxyUrlFromPac:reqCs:%s\n", reqCs);
+
 	char* retCString = (char*)calloc(STR_LEN, sizeof(char));
 
 	CFStringRef reqStr = CFStringCreateWithCString(NULL, reqCs, kCFStringEncodingUTF8);
+	printf("CGO:_getProxyUrlFromPac:reqStr:%p\n", reqCs);
 	CFStringRef pacStr = CFStringCreateWithCString(NULL, pac, kCFStringEncodingUTF8);
+	printf("CGO:_getProxyUrlFromPac:pacStr:%p\n", pacStr);
 	CFURLRef pacUrl = CFURLCreateWithString(NULL, pacStr, NULL);
+	printf("CGO:_getProxyUrlFromPac:pacUrl:%p\n", pacUrl);
 	CFURLRef reqUrl = CFURLCreateWithString(NULL, reqStr, NULL);
+	printf("CGO:_getProxyUrlFromPac:reqUrl:%p\n", reqUrl);
 
 	CFTypeRef result = NULL;
 	CFStreamClientContext context = { 0, &result, NULL, NULL, NULL };
 	CFRunLoopSourceRef runloop_src = CFNetworkExecuteProxyAutoConfigurationURL(pacUrl, reqUrl, proxyAutoConfCallback, &context);
+	printf("CGO:_getProxyUrlFromPac:runloop_src:%p\n", runloop_src);
 
 	if (runloop_src) {
 		const CFStringRef private_runloop_mode = CFSTR("go-ieproxy");
@@ -98,7 +106,10 @@ char* _getPacUrl() {
 
 */
 import "C"
-import "unsafe"
+import (
+	"fmt"
+	"unsafe"
+)
 
 func (psc *ProxyScriptConf) findProxyForURL(URL string) string {
 	if !psc.Active {
@@ -118,6 +129,11 @@ func getProxyForURL(pacFileURL, url string) string {
 
 	csUrl := C.CString(url)
 	csPac := C.CString(pacFileURL)
+	fmt.Println()
+	fmt.Println("#getProxyForURL:pacFileURL:", pacFileURL)
+	fmt.Println("#getProxyForURL:url:", url)
+	fmt.Println("#getProxyForURL:csUrl:", csUrl)
+	fmt.Println("#getProxyForURL:csPac:", csPac)
 	csRet := C._getProxyUrlFromPac(csPac, csUrl)
 
 	defer C.free(unsafe.Pointer(csUrl))

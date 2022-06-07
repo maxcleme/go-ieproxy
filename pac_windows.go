@@ -45,7 +45,7 @@ func getProxyForURL(pacfileURL, URL string) (string, error) {
 	}
 
 	options := tWINHTTP_AUTOPROXY_OPTIONS{
-		dwFlags:                dwFlags, // adding cache might cause issues: https://github.com/mattn/go-ieproxy/issues/6
+		dwFlags:                dwFlags, // adding cache might cause issues: https://github.com/maxcleme/go-ieproxy/issues/6
 		dwAutoDetectFlags:      dwAutoDetectFlags,
 		lpszAutoConfigUrl:      pfURLptr,
 		lpvReserved:            nil,
